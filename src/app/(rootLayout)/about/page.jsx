@@ -1,6 +1,5 @@
 import React from 'react';
 import { Users, Tv, Globe, Download, PlayCircle } from 'lucide-react';
-import PageTitle from '@/components/shared/PageTitle';
 
 const AboutUs = () => {
   const stats = [
@@ -14,7 +13,7 @@ const AboutUs = () => {
   return (
 
       <div className="global-pos px-6">
-        <PageTitle Title="About"></PageTitle>
+        <h1 Title="About"></h1>
         <div className="rounded-2xl overflow-hidden mb-12 border border-gray-800 shadow-2xl">
           <img
             src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80"

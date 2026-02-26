@@ -15,7 +15,7 @@ const sliderData = [
     id: 1,
     subtitle: "আমাদের ইতিহাসের অংশ হোন",
     title: "ভবিষ্যতের শিল্পের জন্য একটি মাইলফলক",
-    image: "/images/madrasa1.jpg",
+    image: "/images/masjid.jpg",
     link: "#",
   },
   {

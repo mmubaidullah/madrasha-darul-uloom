@@ -99,98 +99,85 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
-import { Facebook, Youtube, Twitter, Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Facebook, Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#0A1D37] text-white pt-16">
-      {/* Main Footer Container */}
-      <div className="container max-w-screen-xl mx-auto px-6 pb-12">
+    <footer className="bg-[#fcfbf7] border-t border-gray-200 pt-16 pb-6 text-left" dir="ltr">
+      <div className="container max-w-screen-xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           
-          {/* Column 1: Logo & About */}
-          <div className="space-y-6">
-            <Link href="/" className="inline-block">
-              {/* আপনার মাদরাসার লোগো এখানে দিন */}
-              <img 
-                src="https://azhar.edu.eg/wp-content/uploads/2024/07/UniLogoSmall.png" 
-                alt="Darul Ulum Logo" 
-                className="h-16 w-auto brightness-0 invert" 
-              />
-            </Link>
-            <p className="text-gray-400 leading-relaxed">
-              দারুল উলুম আল ইসলামিয়া একটি আদর্শ দ্বীনি শিক্ষা প্রতিষ্ঠান। ১৯৫০ সাল থেকে আমরা ইলমে নববীর আলোকবর্তিকা ছড়িয়ে দিতে নিরলস কাজ করে যাচ্ছি।
+          {/* কলাম ১: লোগো ও পরিচিতি */}
+          <div className="space-y-4">
+            <img 
+              src="/images/Madrasha-Logo.jpeg" 
+              alt="মাদরাসা লোগো" 
+              className="h-20 w-auto mb-4" 
+            />
+            <p className="text-gray-600 text-sm leading-relaxed">
+              মাদরাসা দারুল উলুম আল ইসলামিয়ায় আপনাকে স্বাগতম। ইলমে নববীর প্রচার ও প্রসারে আমরা সর্বদা সচেষ্ট।
             </p>
-            <div className="flex gap-4">
-              <Link href="#" className="p-2 bg-white/10 rounded-full hover:bg-[#FDC500] hover:text-blue-900 transition-all"><Facebook size={18} /></Link>
-              <Link href="#" className="p-2 bg-white/10 rounded-full hover:bg-[#FDC500] hover:text-blue-900 transition-all"><Youtube size={18} /></Link>
-              <Link href="#" className="p-2 bg-white/10 rounded-full hover:bg-[#FDC500] hover:text-blue-900 transition-all"><Twitter size={18} /></Link>
-            </div>
           </div>
 
-          {/* Column 2: Quick Links */}
+          {/* কলাম ২: মাদরাসা সম্পর্কে */}
           <div>
-            <h4 className="text-xl font-bold mb-8 border-l-4 border-[#FDC500] pl-3">মাদরাসা সম্পর্কে</h4>
-            <ul className="space-y-4 text-gray-400">
-              <li><Link href="#" className="hover:text-[#FDC500] hover:translate-x-2 transition-all inline-block">আমাদের পরিচিতি</Link></li>
-              <li><Link href="#" className="hover:text-[#FDC500] hover:translate-x-2 transition-all inline-block">শিক্ষা বিভাগসমূহ</Link></li>
-              <li><Link href="#" className="hover:text-[#FDC500] hover:translate-x-2 transition-all inline-block">শিক্ষক মণ্ডলী</Link></li>
-              <li><Link href="#" className="hover:text-[#FDC500] hover:translate-x-2 transition-all inline-block">নোটিশ বোর্ড</Link></li>
-              <li><Link href="#" className="hover:text-[#FDC500] hover:translate-x-2 transition-all inline-block">যোগাযোগ করুন</Link></li>
+            <h4 className="text-[#1E6BAD] font-bold text-lg mb-6 border-b-2 border-gray-100 inline-block pb-1">মাদরাসা সম্পর্কে</h4>
+            <ul className="space-y-3 text-gray-700">
+              <li><Link href="#" className="hover:text-[#1E6BAD] transition-all">আমাদের পরিচয়</Link></li>
+              <li><Link href="#" className="hover:text-[#1E6BAD] transition-all">শিক্ষা বিভাগসমূহ</Link></li>
+              <li><Link href="#" className="hover:text-[#1E6BAD] transition-all">সংবাদ ও নোটিশ</Link></li>
+              <li><Link href="#" className="hover:text-[#1E6BAD] transition-all">যোগাযোগ</Link></li>
             </ul>
           </div>
 
-          {/* Column 3: Services/Facilities */}
+          {/* কলাম ৩: অন্যান্য লিঙ্ক */}
           <div>
-            <h4 className="text-xl font-bold mb-8 border-l-4 border-[#FDC500] pl-3">সুযোগ-সুবিধা</h4>
-            <ul className="space-y-4 text-gray-400">
-              <li><Link href="#" className="hover:text-[#FDC500] hover:translate-x-2 transition-all inline-block">কেন্দ্রীয় কুতুবখানা</Link></li>
-              <li><Link href="#" className="hover:text-[#FDC500] hover:translate-x-2 transition-all inline-block">লিল্লাহ বোর্ডিং</Link></li>
-              <li><Link href="#" className="hover:text-[#FDC500] hover:translate-x-2 transition-all inline-block">চিকিৎসা কেন্দ্র</Link></li>
-              <li><Link href="#" className="hover:text-[#FDC500] hover:translate-x-2 transition-all inline-block">ছাত্রাবাস</Link></li>
-              <li><Link href="#" className="hover:text-[#FDC500] hover:translate-x-2 transition-all inline-block">ভর্তি সংক্রান্ত অভিযোগ</Link></li>
+            <h4 className="text-[#1E6BAD] font-bold text-lg mb-6 border-b-2 border-gray-100 inline-block pb-1">প্রয়োজনীয় লিঙ্ক</h4>
+            <ul className="space-y-3 text-gray-700">
+              <li><Link href="#" className="hover:text-[#1E6BAD] transition-all">অনলাইন ভর্তি</Link></li>
+              <li><Link href="#" className="hover:text-[#1E6BAD] transition-all">ফলাফল</Link></li>
+              <li><Link href="#" className="hover:text-[#1E6BAD] transition-all">লাইব্রেরি</Link></li>
+              <li><Link href="#" className="hover:text-[#1E6BAD] transition-all">গ্যালারি</Link></li>
             </ul>
           </div>
 
-          {/* Column 4: Newsletter & Contact */}
+          {/* কলাম ৪: ফেসবুক ও মেইল লিঙ্ক */}
           <div>
-            <h4 className="text-xl font-bold mb-8 border-l-4 border-[#FDC500] pl-3">নিউজলেটার</h4>
-            <p className="text-gray-400 mb-6">মাদরাসার সর্বশেষ আপডেট ও খবর পেতে আপনার ইমেইল দিয়ে সদস্যতা নিন।</p>
-            <div className="relative group">
-              <input 
-                type="email" 
-                placeholder="আপনার ইমেইল..." 
-                className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 focus:outline-none focus:border-[#FDC500] transition-all"
-              />
-              <button className="absolute right-2 top-2 bg-[#FDC500] p-1.5 rounded-md text-blue-900 hover:bg-white transition-all">
-                <Send size={18} />
-              </button>
-            </div>
-            <div className="mt-8 space-y-3">
-              <div className="flex items-center gap-3 text-gray-400">
-                <MapPin size={18} className="text-[#FDC500]" />
-                <span>ঢাকা, বাংলাদেশ</span>
+            <h4 className="text-[#1E6BAD] font-bold text-lg mb-6 border-b-2 border-gray-100 inline-block pb-1">যোগাযোগের মাধ্যম</h4>
+            <div className="space-y-4">
+              {/* ফেসবুক লিঙ্ক */}
+              <div className="flex items-center gap-3 text-gray-700 hover:text-[#1E6BAD] transition-all group">
+                <div className="bg-white p-2 rounded-full shadow-sm group-hover:bg-[#1E6BAD] group-hover:text-white transition-all">
+                  <Facebook size={18} />
+                </div>
+                <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" className="text-sm font-medium">আমাদের ফেসবুক পেজ</a>
               </div>
-              <div className="flex items-center gap-3 text-gray-400">
-                <Phone size={18} className="text-[#FDC500]" />
-                <span>+৮৮০ ১২৩৪ ৫৬৭৮৯০</span>
+
+              {/* মেইল লিঙ্ক */}
+              <div className="flex items-center gap-3 text-gray-700 hover:text-[#1E6BAD] transition-all group">
+                <div className="bg-white p-2 rounded-full shadow-sm group-hover:bg-[#1E6BAD] group-hover:text-white transition-all">
+                  <Mail size={18} />
+                </div>
+                <a href="mailto:info@danululumsatbaria.edu" className="text-sm font-medium">আমাদের মেইল করুন</a>
+              </div>
+
+              {/* ঠিকানা */}
+              <div className="flex items-center gap-3 text-gray-700">
+                <div className="bg-white p-2 rounded-full shadow-sm text-[#1E6BAD]">
+                  <MapPin size={18} />
+                </div>
+                <span className="text-sm">চান্দিনা, কুমিল্লা</span>
               </div>
             </div>
           </div>
 
         </div>
-      </div>
 
-      {/* Copyright Bar */}
-      <div className="border-t border-white/10 bg-black/20 py-6">
-        <div className="container max-w-screen-xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-400 text-sm">
-            © ২০২৬ <span className="text-[#FDC500]">দারুল উলুম আল ইসলামিয়া</span>। সর্বস্বত্ব সংরক্ষিত।
+        {/* নিচের কপিরাইট অংশ */}
+        <div className="mt-16 pt-6 border-t border-gray-200 text-center">
+          <p className="text-gray-500 text-sm">
+            © ২০২৬ মাদরাসা দারুল উলুম আল ইসলামিয়া। সর্বস্বত্ব সংরক্ষিত।
           </p>
-          <div className="flex gap-6 text-sm text-gray-400">
-            <Link href="#" className="hover:text-white">প্রাইভেসি পলিসি</Link>
-            <Link href="#" className="hover:text-white">শর্তাবলী</Link>
-          </div>
         </div>
       </div>
     </footer>

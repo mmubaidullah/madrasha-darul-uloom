@@ -49,7 +49,7 @@ const AboutSection = () => {
               <div className="w-full md:w-1/3 flex justify-center bg-[#FFD074]/20 p-10 rounded-xl relative">
                 <div className="absolute top-0 left-0 w-2 h-full bg-[#FFD074] rounded-l-xl"></div>
                 <img
-                  src="https://azhar.edu.eg/wp-content/uploads/2024/07/UniLogoSmall.png"
+                  src="/images/Madrasha-Vobon.jpeg"
                   alt="Logo"
                   className="max-w-full h-auto object-contain"
                 />
@@ -59,23 +59,30 @@ const AboutSection = () => {
                   আমাদের ইতিহাস ও ঐতিহ্য
                 </h3>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  আমাদের এই প্রতিষ্ঠানটি ইসলামী আইন (শরিয়া), যুক্তি, ব্যাকরণ
-                  এবং অলঙ্কারশাস্ত্র অধ্যয়নের এক অনন্য বিদ্যাপীঠ। সুদীর্ঘ কাল
-                  ধরে আমরা ইলমে নববীর খেদমতে নিয়োজিত। বর্তমানে এখানে আধুনিক
-                  বিজ্ঞানের পাশাপাশি কুরআন ও সুন্নাহর গভীর জ্ঞান চর্চা করা হয়।
-                  স্নাতক এবং স্নাতকোত্তর স্তরে বহুবিধ বিভাগ নিয়ে আমরা একটি
-                  পূর্ণাঙ্গ আদর্শ নাগরিক গড়ার লক্ষ্যে কাজ করে যাচ্ছি।
+                  মাদরাসা দারুল উলূম আল ইসলামিয়া সাতবাড়িয়া দীর্ঘ সময় ধরে দ্বীনি
+                  শিক্ষার এক আলোকবর্তিকা হিসেবে কাজ করে যাচ্ছে। আমাদের এই
+                  প্রতিষ্ঠানটি ইসলামী আইন (শরিয়া), উসূলে ফিকহ, আরবি ব্যাকরণ এবং
+                  ইলমে হাদীস অধ্যয়নের এক অনন্য বিদ্যাপীঠ। বর্তমানে আমরা
+                  **মেশকাত (স্নাতক সমমান)** জামাত পর্যন্ত অত্যন্ত সফলতার সাথে
+                  ইলমে নববীর গভীর জ্ঞান চর্চা করে যাচ্ছি।
+                </p>
+                <p className="text-gray-600 text-lg leading-relaxed mt-4">
+                  এখানে কুরআন ও সুন্নাহর মৌলিক শিক্ষার পাশাপাশি ছাত্রদের আধুনিক
+                  যুগোপযোগী নাগরিক হিসেবে গড়ে তুলতে প্রয়োজনীয় বিষয়াবলীও
+                  গুরুত্বের সাথে পড়ানো হয়। নূরানী, হিফজ এবং কিতাব বিভাগে যোগ্য ও
+                  মুখলিস উলামায়ে কেরামের তত্ত্বাবধানে আমরা একটি আদর্শ ও নৈতিক
+                  সমাজ বিনির্মাণে নিরলসভাবে কাজ করে যাচ্ছি।
                 </p>
                 <div className="mt-8 flex gap-6">
                   <div className="border-l-4 border-[#FDC500] pl-4">
                     <span className="block text-2xl font-bold text-[#1E6BAD]">
-                      ৮০+
+                      ৪০+
                     </span>
                     <span className="text-gray-500">অভিজ্ঞ শিক্ষক</span>
                   </div>
                   <div className="border-l-4 border-[#FDC500] pl-4">
                     <span className="block text-2xl font-bold text-[#1E6BAD]">
-                      ৫০০০+
+                      ৬০০+
                     </span>
                     <span className="text-gray-500">সফল শিক্ষার্থী</span>
                   </div>

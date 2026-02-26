@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { FaUserTie, FaPhoneAlt } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaUserTie, FaPhoneAlt, FaChevronRight } from "react-icons/fa";
 import { HiOutlineAcademicCap } from "react-icons/hi";
 import { MdCall } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
@@ -58,109 +58,133 @@ export default function AsatizaPage() {
     { name: "হাফেজ আরিফ বিল্লাহ নোমানী", phone: "+8801831684849", position: "মুদাররিস", dept: "মক্তব বিভাগ" }
 ];
 
-  const departments = [
-    "সকল উস্তায",
-    "কিতাব বিভাগ",
-    "হিফজ বিভাগ",
-    "মক্তব বিভাগ",
-  ];
+  const departments = ["সকল উস্তায", "কিতাব বিভাগ", "হিফজ বিভাগ", "মক্তব বিভাগ"];
 
   const filteredTeachers = teachers.filter(
     (t) =>
       (activeDept === "সকল উস্তায" || t.dept === activeDept) &&
-      (t.name.includes(search) || t.position.includes(search)),
+      (t.name.includes(search) || t.position.includes(search))
   );
 
   return (
-    <section className="relative min-h-screen py-16 bg-gray-50 overflow-hidden">
-      {/* Islamic Subtle Pattern */}
-      <div className="absolute inset-0 bg-[url('/images/islamic-pattern.png')] opacity-5 bg-cover bg-center pointer-events-none"></div>
-
-      <div className="max-w-6xl mx-auto px-6 relative z-10">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-green-800">আসাতিযায়ে কেরাম</h1>
-          <p className="text-gray-500 mt-2">সম্মানিত শিক্ষকবৃন্দের তালিকা</p>
+    <section className="min-h-screen py-10 bg-[#F8FAFC] font-sans">
+      <div className="max-w-6xl mx-auto px-5">
+        
+        {/* Header Section */}
+        <div className="text-center mb-10">
+          <motion.h1 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-3xl md:text-4xl font-black text-slate-800 mb-2"
+          >
+            আসাতিযায়ে <span className="text-[#1E73BE]">কেরাম</span>
+          </motion.h1>
+          <p className="text-slate-500 text-sm font-medium">দ্বীনের খেদমতে নিয়োজিত আমাদের শিক্ষকবৃন্দ</p>
         </div>
 
-        {/* Filter */}
-        <div className="flex flex-wrap gap-4 justify-center mb-8">
-          {departments.map((dept) => (
-            <button
-              key={dept}
-              onClick={() => setActiveDept(dept)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition ${
-                activeDept === dept
-                  ? "bg-green-700 text-white shadow-md"
-                  : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              {dept}
-            </button>
-          ))}
+        {/* Search & Filter - Compact Design */}
+        <div className="flex flex-col md:flex-row gap-4 mb-10 items-center justify-between bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {departments.map((dept) => (
+              <button
+                key={dept}
+                onClick={() => setActiveDept(dept)}
+                className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all duration-300 ${
+                  activeDept === dept
+                    ? "bg-[#1E73BE] text-white shadow-md"
+                    : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                }`}
+              >
+                {dept}
+              </button>
+            ))}
+          </div>
+          <div className="relative w-full md:w-64">
+            <FiSearch className="absolute top-2.5 left-3 text-slate-400" />
+            <input
+              type="text"
+              placeholder="খুঁজুন..."
+              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E73BE]/20 focus:bg-white transition-all"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
 
-        {/* Search */}
-        <div className="relative w-full md:w-1/2 mx-auto mb-12">
-          <FiSearch className="absolute top-3 left-3 text-gray-400 text-lg" />
-          <input
-            type="text"
-            placeholder="নাম বা পদবী দিয়ে খুঁজুন..."
-            className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
+        {/* Cards Grid */}
+        <motion.div 
+          layout
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredTeachers.map((teacher, index) => (
+              <motion.div
+                key={teacher.name}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                whileHover={{ y: -4 }}
+                className="group relative bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all overflow-hidden"
+              >
+                {/* Decorative Side Bar */}
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#1E73BE] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <div className="flex flex-col h-full">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="bg-blue-50 p-2.5 rounded-xl text-[#1E73BE] group-hover:bg-[#1E73BE] group-hover:text-white transition-colors">
+                      <FaUserTie size={18} />
+                    </div>
+                    <span className="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-md">
+                      {teacher.dept}
+                    </span>
+                  </div>
 
-        {/* Cards (2 per row always) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          {filteredTeachers.map((teacher, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -8 }}
-              className="bg-green-50 rounded-2xl border border-green-100 p-8 shadow-sm hover:shadow-lg transition-all duration-300"
-            >
-              {/* Name */}
-              <div className="flex items-center gap-3 mb-4">
-                <FaUserTie className="text-green-700 text-xl" />
-                <span className="font-bold text-gray-700 ">নাম:</span>
-                <h2 className="text-xl font-semibold text-gray-800">
-                  {teacher.name}
-                </h2>
-              </div>
+                  <h2 className="text-lg font-bold text-slate-800 leading-snug mb-1 group-hover:text-[#1E73BE] transition-colors">
+                    {teacher.name}
+                  </h2>
+                  
+                  <div className="flex items-center gap-2 text-slate-500 mb-4">
+                    <HiOutlineAcademicCap size={16} className="shrink-0" />
+                    <p className="text-xs font-medium">{teacher.position}</p>
+                  </div>
 
-              {/* Position */}
-              <div className="flex items-center gap-3 mb-4">
-                <HiOutlineAcademicCap className="text-green-600 text-xl" />
-                <span className="font-bold text-gray-700 ">পদবী:</span>
-                <p className="text-gray-600">{teacher.position}</p>
-              </div>
-
-              {/* Phone */}
-              <div className="flex items-center justify-between mt-6">
-                <div className="flex items-center gap-3">
-                  <FaPhoneAlt className="text-green-600" />
-                <span className="font-bold text-gray-700 ">মোবাইল:</span>
-                  <span className="text-gray-800 font-medium">
-                    {teacher.phone}
-                  </span>
+                  <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
+                        <FaPhoneAlt size={10} />
+                      </div>
+                      <span className="text-xs font-bold text-slate-700 tracking-tight">{teacher.phone}</span>
+                    </div>
+                    
+                    <a
+                      href={`tel:${teacher.phone}`}
+                      className="w-9 h-9 flex items-center justify-center bg-[#1E73BE]/10 text-[#1E73BE] rounded-xl hover:bg-[#1E73BE] hover:text-white transition-all shadow-sm active:scale-90"
+                      title="কল করুন"
+                    >
+                      <MdCall size={18} />
+                    </a>
+                  </div>
                 </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
 
-                <a
-                  href={`tel:${teacher.phone}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition"
-                >
-                  <MdCall />
-                  কল করুন
-                </a>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {/* Empty State */}
+        {filteredTeachers.length === 0 && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-20"
+          >
+            <div className="text-slate-300 mb-4 flex justify-center">
+              <FiSearch size={48} />
+            </div>
+            <p className="text-slate-500 font-medium">কোনো শিক্ষক খুঁজে পাওয়া যায়নি</p>
+          </motion.div>
+        )}
       </div>
     </section>
   );

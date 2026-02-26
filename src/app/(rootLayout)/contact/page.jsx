@@ -1,191 +1,206 @@
 "use client";
-
-import {
-  Phone,
-  Mail,
-  Users,
-  BookOpen,
-  MapPin,
-  Facebook,
-  Twitter,
-  Youtube,
-  Loader2,
-} from "lucide-react";
 import { useState } from "react";
+import { 
+  Phone, Mail, MapPin, Clock, Send, Loader2, 
+  Facebook, Youtube, Twitter, BookOpen, Users 
+} from "lucide-react";
 
 export default function ContactPage() {
   const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+    phone: ""
+  });
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     // ডেমো লোডিং টাইম
     await new Promise((resolve) => setTimeout(resolve, 1500));
-
     setLoading(false);
-    e.target.reset();
     alert("আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে! ইনশাআল্লাহ দ্রুত যোগাযোগ করা হবে।");
-  }
+    setFormData({ name: "", email: "", subject: "", message: "", phone: "" });
+  };
 
   return (
-    <div className="bg-white text-gray-900 font-sans">
-      {/* HERO SECTION */}
-      <section className="py-20 text-center bg-gray-50 border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-6">
-          <p className="text-emerald-600 font-semibold text-sm mb-3 uppercase tracking-wider">
-            যোগাযোগ
-          </p>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-6">
-            আমাদের সাথে যোগাযোগ করুন
-          </h1>
-          <p className="text-gray-600 text-lg">
-            মাদরাসা সংক্রান্ত যেকোনো তথ্য, ভর্তি বা পরামর্শের জন্য আমরা আপনার সেবায় নিয়োজিত।
+    <div className="bg-gray-50 min-h-screen font-sans">
+      {/* --- Page Header (Blue Hero) --- */}
+      <section className="bg-[#1E73BE] py-16 md:py-24 text-white text-center">
+        <div className="container mx-auto px-6">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">যোগাযোগ করুন</h1>
+          <p className="text-blue-100 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+            মাদরাসা সংক্রান্ত যেকোনো জিজ্ঞাসা বা পরামর্শের জন্য আমাদের সাথে যোগাযোগ করুন। 
+            আমরা দ্রুত আপনার উত্তর দেওয়ার চেষ্টা করব।
           </p>
         </div>
       </section>
 
-      {/* CONTACT INFO CARDS */}
-      <section className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {cards.map((card, i) => (
-          <div
-            key={i}
-            className="bg-white border border-gray-200 p-8 rounded-2xl shadow-sm hover:shadow-md hover:border-emerald-500 transition-all duration-300 group text-center"
-          >
-            <div className="w-16 h-16 mx-auto flex items-center justify-center bg-emerald-50 rounded-full mb-6 group-hover:bg-emerald-600 transition-colors">
-              <card.icon size={28} className="text-emerald-600 group-hover:text-white" />
-            </div>
-            <h3 className="text-xl font-bold mb-2">{card.title}</h3>
-            <p className="text-gray-500 text-sm mb-4">{card.desc}</p>
-            <p className="text-emerald-700 font-semibold">{card.info}</p>
-          </div>
-        ))}
-      </section>
+      {/* --- Main Content Section --- */}
+      <div className="container max-w-screen-xl mx-auto px-6 py-12 md:-mt-20">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* --- Left Side: Contact Info Cards --- */}
+          <div className="lg:col-span-1 space-y-6">
+            {contactCards.map((card, index) => (
+              <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4 hover:shadow-md transition-shadow">
+                <div className={`p-3 rounded-xl ${card.bgColor} ${card.iconColor}`}>
+                  <card.icon size={24} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800 text-lg">{card.title}</h3>
+                  <div className="text-gray-600 mt-1 whitespace-pre-line text-sm md:text-base">
+                    {card.info}
+                  </div>
+                </div>
+              </div>
+            ))}
 
-      {/* FORM + ADDRESS SECTION */}
-      <section className="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-3 gap-12">
-        {/* FORM */}
-        <div className="lg:col-span-2 bg-gray-50 rounded-3xl p-8 md:p-12 shadow-inner">
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">বার্তা পাঠান</h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <input
-                name="name"
-                required
-                placeholder="আপনার নাম*"
-                className="w-full bg-white border border-gray-200 focus:border-emerald-500 rounded-xl px-5 py-4 outline-none transition shadow-sm"
-              />
-              <input
-                name="phone"
-                type="tel"
-                required
-                placeholder="মোবাইল নম্বর*"
-                className="w-full bg-white border border-gray-200 focus:border-emerald-500 rounded-xl px-5 py-4 outline-none transition shadow-sm"
-              />
-            </div>
-            <input
-              name="email"
-              type="email"
-              placeholder="ইমেইল (যদি থাকে)"
-              className="w-full bg-white border border-gray-200 focus:border-emerald-500 rounded-xl px-5 py-4 outline-none transition shadow-sm"
-            />
-            <textarea
-              name="message"
-              rows="5"
-              required
-              placeholder="আপনার বার্তাটি বিস্তারিত লিখুন..."
-              className="w-full bg-white border border-gray-200 focus:border-emerald-500 rounded-xl px-5 py-4 outline-none transition shadow-sm"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full md:w-max px-12 bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-emerald-200"
-            >
-              {loading ? <Loader2 className="animate-spin mx-auto" /> : "বার্তা পাঠান"}
-            </button>
-          </form>
-        </div>
-
-        {/* SIDEBAR INFO */}
-        <div className="space-y-8">
-          <div className="bg-emerald-900 text-white p-8 rounded-3xl shadow-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <MapPin className="text-emerald-400" />
-              <h3 className="text-2xl font-bold">মাদরাসার ঠিকানা</h3>
-            </div>
-            <p className="text-emerald-100 text-lg leading-relaxed">
-              সাতবাড়িয়া, চান্দিনা <br />
-              কুমিল্লা, বাংলাদেশ <br />
-              ঢাকা-চট্টগ্রাম মহাসড়কের পাশে।
-            </p>
-          </div>
-
-          <div className="p-8 border border-gray-200 rounded-3xl">
-            <h3 className="text-xl font-bold mb-6">আমাদের সোশ্যাল মিডিয়া</h3>
-            <div className="flex gap-4">
-              <Social icon={Facebook} link="#" />
-              <Social icon={Youtube} link="#" />
-              <Social icon={Twitter} link="#" />
+            {/* Social Media Card */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-800 mb-4">আমাদের সোশ্যাল মিডিয়া</h3>
+              <div className="flex gap-3">
+                <SocialIcon icon={Facebook} link="#" color="hover:bg-blue-600" />
+                <SocialIcon icon={Youtube} link="#" color="hover:bg-red-600" />
+                <SocialIcon icon={Twitter} link="#" color="hover:bg-sky-500" />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* GOOGLE MAP - মাদরাসা পিন করা */}
-      <section className="mt-10">
-        <div className="max-w-7xl mx-auto px-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-800">ম্যাপে আমাদের অবস্থান</h2>
+          {/* --- Right Side: Contact Form --- */}
+          <div className="lg:col-span-2">
+            <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-gray-50">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">আমাদের বার্তা পাঠান</h2>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-700">আপনার নাম</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="নাম লিখুন"
+                      className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-[#1E73BE] focus:ring-4 focus:ring-blue-50 outline-none transition-all"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-700">মোবাইল নম্বর</label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="০১XXX-XXXXXX"
+                      className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-[#1E73BE] focus:ring-4 focus:ring-blue-50 outline-none transition-all text-left"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700">বিষয়</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="কি বিষয়ে জানতে চান?"
+                    className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-[#1E73BE] focus:ring-4 focus:ring-blue-50 outline-none transition-all"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-700">আপনার বার্তা</label>
+                  <textarea
+                    required
+                    rows="5"
+                    placeholder="বিস্তারিত লিখুন..."
+                    className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-[#1E73BE] focus:ring-4 focus:ring-blue-50 outline-none transition-all"
+                    value={formData.message}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="bg-[#1E73BE] hover:bg-[#155a96] text-white font-bold py-4 px-10 rounded-xl transition-all flex items-center justify-center gap-3 w-full md:w-max shadow-lg shadow-blue-100 disabled:opacity-70"
+                >
+                  {loading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <>বার্তা পাঠান <Send size={18} /></>
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
-        <div className="w-full h-[500px] bg-gray-100 grayscale hover:grayscale-0 transition-all duration-1000">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3663.078693892534!2d90.95924912534725!3d23.4853883788544!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x375666b76955c47f%3A0xcd370cf8f08769e5!2z4Kau4Ka-4Kam4Kaw4Ka-4Ka44Ka-IOCmKa-4Kaw4KeB4KayIOCmieCmsuClguCmriDgpobmsmwg4KaH4Ka44Kay4Ka-4Kau4Ka_4Kav4Ka84Ka-IOCmuOCmvuCmpOCmrOCmvuCmsOCmvyDgpprgpbeYp9Cmv_CmqOCmviDgpJXgpYHgpq7gpp_gp43gprLgp43mpr8!5e0!3m2!1sbn!2sbd!4v1715600000000!5m2!1sbn!2sbd"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
-        </div>
-      </section>
+
+        {/* --- Google Map Section --- */}
+        <section className="mt-16">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1.5 h-8 bg-[#1E73BE] rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-800">ম্যাপে আমাদের অবস্থান</h2>
+          </div>
+          <div className="rounded-3xl overflow-hidden shadow-sm border border-gray-200 h-[450px] relative">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3659.43234567!2d91.0000000!3d23.4800000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDI4JzQ4LjAiTiA5McKwMDAnMDAuMCJF!5e0!3m2!1sbn!2sbd!4v1620000000000"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              className="grayscale hover:grayscale-0 transition-all duration-700"
+            ></iframe>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
 
-function Social({ icon: Icon, link }) {
+// Helper Components
+function SocialIcon({ icon: Icon, link, color }) {
   return (
     <a
       href={link}
-      className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all text-gray-600"
+      className={`w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 transition-all hover:text-white ${color}`}
     >
       <Icon size={20} />
     </a>
   );
 }
 
-const cards = [
+const contactCards = [
   {
-    title: "ভর্তি তথ্য",
-    desc: "নতুন ছাত্র ভর্তি ও তথ্যের জন্য",
-    info: "+880 1831-777999",
-    icon: BookOpen,
+    title: "ঠিকানা",
+    info: "সাতবাড়িয়া, চান্দিনা, কুমিল্লা, বাংলাদেশ",
+    icon: MapPin,
+    bgColor: "bg-blue-50",
+    iconColor: "text-blue-600",
   },
   {
-    title: "সরাসরি কল",
-    desc: "যেকোনো জিজ্ঞাসায় আমাদের ফোন দিন",
-    info: "+880 1817-464556",
+    title: "ফোন করুন",
+    info: "+৮৮০ ১৭১২-৩৪৫৬৭৮\n+৮৮০ ১৮২৩-৪৫৬৭৮৯",
     icon: Phone,
+    bgColor: "bg-green-50",
+    iconColor: "text-green-600",
   },
   {
     title: "ইমেইল",
-    desc: "দাপ্তরিক চিঠিপত্রের জন্য",
-    info: "info@darululum.com",
+    info: "info@darululumsatbaria.edu",
     icon: Mail,
+    bgColor: "bg-purple-50",
+    iconColor: "text-purple-600",
   },
   {
-    title: "অভিভাবক শাখা",
-    desc: "ছাত্রদের অগ্রগতির জন্য",
-    info: "parents@darululum.com",
-    icon: Users,
+    title: "অফিস সময়",
+    info: "শনিবার - বৃহস্পতিবার\nসকাল ৮:০০ - বিকাল ৫:০০",
+    icon: Clock,
+    bgColor: "bg-orange-50",
+    iconColor: "text-orange-600",
   },
 ];

@@ -1,74 +1,118 @@
 "use client";
+import { useState } from "react";
+import Link from "next/link";
+import { Calendar, ArrowRight, Bell, Search } from "lucide-react";
 
-import { Newspaper, Calendar, ArrowRight } from "lucide-react";
+// পরবর্তীতে এই ডাটাগুলো MongoDB থেকে আসবে
+const initialNews = [
+  {
+    id: 1,
+    title: "বার্ষিক পরীক্ষার সময়সূচী প্রকাশ",
+    date: "২০ মে, ২০২৪",
+    category: "নোটিশ",
+    description: "২০২৪ শিক্ষাবর্ষের বার্ষিক পরীক্ষার তারিখ ও পূর্ণাঙ্গ রুটিন প্রকাশিত হয়েছে। সকল ছাত্রকে যথাসময়ে উপস্থিত থাকতে বলা হচ্ছে...",
+    image: "/images/notice-1.jpg", // আপনার ইমেজ পাথ অনুযায়ী পরিবর্তন করুন
+  },
+  {
+    id: 2,
+    title: "খতমে বুখারী ও দোয়া মাহফিল অনুষ্ঠিত",
+    date: "১৫ মে, ২০২৪",
+    category: "সংবাদ",
+    description: "মাদরাসার মিলনায়তনে জাঁকজমকপূর্ণভাবে দাওরায়ে হাদীস সমাপনী ছাত্রদের খতমে বুখারী অনুষ্ঠান সম্পন্ন হয়েছে...",
+    image: "/images/news-1.jpg",
+  },
+  {
+    id: 3,
+    title: "নতুন শিক্ষা বর্ষের ভর্তি কার্যক্রম শুরু",
+    date: "১০ মে, ২০২৪",
+    category: "ভর্তি",
+    description: "আগামী শিক্ষাবর্ষের জন্য সীমিত আসনে হিফজ ও কিতাব বিভাগে ভর্তি চলছে। দ্রুত যোগাযোগ করার জন্য অনুরোধ করা হলো...",
+    image: "/images/admission.jpg",
+  },
+];
 
 export default function NewsPage() {
-  return (
-    <div className="bg-white min-h-screen">
-      {/* Header */}
-      <section className="py-16 bg-gray-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4 text-center">মাদরাসা সংবাদ</h1>
-          <p className="text-gray-600">মাদরাসার সাম্প্রতিক কার্যক্রম ও ইভেন্টসমূহের আপডেট।</p>
-        </div>
-      </section>
+  const [newsList, setNewsList] = useState(initialNews);
+  const [searchTerm, setSearchTerm] = useState("");
 
-      {/* News Grid */}
-      <section className="max-w-7xl mx-auto px-6 py-16">
+  // সার্চ ফিল্টার (পরবর্তীতে API দিয়েও করা যাবে)
+  const filteredNews = newsList.filter((item) =>
+    item.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-10 px-4 md:px-8">
+      <div className="max-w-screen-xl mx-auto">
+        
+        {/* হেডার সেকশন */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+          <div>
+            <h2 className="text-3xl font-bold text-[#1E73BE] flex items-center gap-2">
+              <Bell className="text-orange-500" /> সংবাদ ও নোটিশ
+            </h2>
+            <p className="text-gray-500 mt-1">মাদরাসার সর্বশেষ আপডেট এবং ঘোষণাগুলো এখানে দেখুন।</p>
+          </div>
+
+          {/* ইন-পেজ সার্চবার */}
+          <div className="relative w-full md:w-80">
+            <input
+              type="text"
+              placeholder="খবর খুঁজুন..."
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#1E73BE] outline-none transition-all"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Search size={18} className="absolute left-3 top-2.5 text-gray-400" />
+          </div>
+        </div>
+
+        {/* নিউজ গ্রিড */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {newsList.map((news) => (
-            <article key={news.id} className="group cursor-pointer">
-              <div className="relative h-64 overflow-hidden rounded-2xl mb-4">
+          {filteredNews.map((news) => (
+            <article key={news.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group">
+              {/* ইমেজ হোল্ডার (Placeholder) */}
+              <div className="h-48 bg-gray-200 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <img 
                   src={news.image} 
-                  alt={news.title} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                  alt={news.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => { e.target.src = "https://via.placeholder.com/400x250?text=No+Image"; }}
                 />
-                <div className="absolute top-4 left-4 bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-lg">
-                  সংবাদ
+                <span className="absolute top-4 left-4 z-20 bg-[#1E73BE] text-white text-[12px] px-3 py-1 rounded-full font-bold">
+                  {news.category}
+                </span>
+              </div>
+
+              {/* কন্টেন্ট */}
+              <div className="p-6">
+                <div className="flex items-center text-gray-400 text-sm mb-3 gap-2">
+                  <Calendar size={14} />
+                  <span>{news.date}</span>
                 </div>
-              </div>
-              <div className="flex items-center gap-2 text-gray-400 text-xs mb-3">
-                <Calendar size={14} />
-                {news.date}
-              </div>
-              <h2 className="text-xl font-bold text-gray-800 group-hover:text-emerald-600 transition mb-3 leading-snug">
-                {news.title}
-              </h2>
-              <p className="text-gray-500 text-sm line-clamp-2 mb-4 leading-relaxed">
-                {news.excerpt}
-              </p>
-              <div className="flex items-center gap-2 text-emerald-600 font-bold group-hover:translate-x-2 transition-transform">
-                বিস্তারিত পড়ুন <ArrowRight size={16} />
+                <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-[#1E73BE] transition-colors leading-snug">
+                  {news.title}
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-3">
+                  {news.description}
+                </p>
+                <Link 
+                  href={`/news/${news.id}`}
+                  className="inline-flex items-center gap-2 text-[#1E73BE] font-bold text-sm hover:underline"
+                >
+                  বিস্তারিত পড়ুন <ArrowRight size={16} />
+                </Link>
               </div>
             </article>
           ))}
         </div>
-      </section>
+
+        {/* যদি কোনো নিউজ না পাওয়া যায় */}
+        {filteredNews.length === 0 && (
+          <div className="text-center py-20 text-gray-400">
+            এই মুহূর্তে কোনো সংবাদ বা নোটিশ পাওয়া যায়নি।
+          </div>
+        )}
+      </div>
     </div>
   );
 }
-
-const newsList = [
-  {
-    id: 1,
-    title: "বিদায়ী ছাত্রদের দোয়া মাহফিল",
-    excerpt: "মাদরাসা মিলনায়তনে অত্যন্ত ভাবগাম্ভীর্যের সাথে বিদায়ী অনুষ্ঠান সম্পন্ন হয়েছে...",
-    date: "১৮ ফেব্রুয়ারি, ২০২৬",
-    image: "/images/biday-students.jpg",
-  },
-  {
-    id: 2,
-    title: "কুমিল্লা জেলা ভিত্তিক হিফজ প্রতিযোগিতায় ৩য় স্থান অর্জন",
-    excerpt: "আমাদের হিফজ বিভাগের ছাত্র হাফেজ মো: আব্দুল্লাহ জেলা ভিত্তিক কুরআন প্রতিযোগিতায়...",
-    date: "১২ ফেব্রুয়ারি, ২০২৬",
-    image: "https://images.unsplash.com/photo-1591115765373-520b7a427613?q=80&w=600",
-  },
-  {
-    id: 3,
-    title: "মাদরাসায় আধুনিক কুতুবখানা (লাইব্রেরি) উদ্বোধন",
-    excerpt: "ছাত্রদের গবেষণার সুবিধার্থে কিতাব বিভাগে নতুন একটি সমৃদ্ধ লাইব্রেরি স্থাপন করা হয়েছে...",
-    date: "০৫ ফেব্রুয়ারি, ২০২৬",
-    image: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=600",
-  },
-];

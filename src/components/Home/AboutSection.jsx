@@ -76,13 +76,13 @@ const AboutSection = () => {
                 <div className="mt-8 flex gap-6">
                   <div className="border-l-4 border-[#FDC500] pl-4">
                     <span className="block text-2xl font-bold text-[#1E6BAD]">
-                      ৪০+
+                      ৪২
                     </span>
                     <span className="text-gray-500">অভিজ্ঞ শিক্ষক</span>
                   </div>
                   <div className="border-l-4 border-[#FDC500] pl-4">
                     <span className="block text-2xl font-bold text-[#1E6BAD]">
-                      ৬০০+
+                      ৭৯০
                     </span>
                     <span className="text-gray-500">সফল শিক্ষার্থী</span>
                   </div>

@@ -13,22 +13,22 @@ import "swiper/css/effect-fade";
 const sliderData = [
   {
     id: 1,
-    subtitle: "আমাদের ইতিহাসের অংশ হোন",
-    title: "ভবিষ্যতের শিল্পের জন্য একটি মাইলফলক",
+    subtitle: "স্বাগতম সাতবাড়িয়া দারুল উলুম মাদরাসায়",
+    title: "ইলমে দ্বীনের আলোয় আলোকিত একটি প্রজন্ম",
     image: "/images/masjid.jpg",
     link: "#",
   },
   {
     id: 2,
-    subtitle: "আমাদের ইতিহাসের অংশ হোন",
-    title: "ভবিষ্যৎ গড়তে শিখুন",
+    subtitle: "ইলমই হলো প্রকৃত সম্পদ",
+    title: "কুরআনের হাফেজ ও হক্কানী আলেম গড়ার সংকল্প",
     image: "/images/madrasa2.jpg",
     link: "#",
   },
   {
     id: 3,
-    subtitle: "আমাদের ইতিহাসের অংশ হোন",
-    title: "একটি আদর্শ দ্বীনি বিদ্যাপীঠ",
+    subtitle: "একটি আদর্শ দ্বীনি পরিবার",
+    title: "আপনার সন্তানের উজ্জ্বল ভবিষ্যতের বিশ্বস্ত ঠিকানা",
     image: "/images/madrasa3.jpg",
     link: "#",
   },
@@ -49,9 +49,8 @@ const HeroSection = () => {
         {sliderData.map((slide) => (
           <SwiperSlide key={slide.id}>
             <div className="tp-hero-item p-relative h-full flex items-center">
-              
               {/* Background Image - ডিজাইনের মূল অংশ */}
-              <div 
+              <div
                 className="tp-hero-bg absolute inset-0 bg-cover bg-center transition-transform duration-[5000ms] scale-100 swiper-slide-active:scale-110"
                 style={{ backgroundImage: `url('${slide.image}')` }}
               >
@@ -67,7 +66,7 @@ const HeroSection = () => {
                       <span className="tp-hero-subtitle text-[#FDC500] text-lg md:text-xl font-semibold mb-4 block animate-fadeInUp">
                         {slide.subtitle}
                       </span>
-                      
+
                       {/* Title */}
                       <h2 className="tp-hero-title text-4xl md:text-7xl font-extrabold text-white mb-10 leading-[1.1] animate-fadeInUp">
                         {slide.title}
@@ -81,9 +80,27 @@ const HeroSection = () => {
                         >
                           আমাদের সাথে যোগ দিন
                           <span>
-                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 7H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                                <path d="M7 1L13 7L7 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 14 14"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M1 7H13"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              ></path>
+                              <path
+                                d="M7 1L13 7L7 13"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              ></path>
                             </svg>
                           </span>
                         </Link>
@@ -100,16 +117,28 @@ const HeroSection = () => {
       {/* ডিজাইন অনুযায়ী কাস্টম ডট স্টাইল */}
       <style jsx global>{`
         @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         .animate-fadeInUp {
           animation: fadeInUp 1s ease forwards;
         }
-        .swiper-slide-active .tp-hero-title { animation-delay: 0.4s; }
-        .swiper-slide-active .tp-hero-subtitle { animation-delay: 0.2s; }
-        .swiper-slide-active .tp-hero-btn { animation-delay: 0.6s; }
-        
+        .swiper-slide-active .tp-hero-title {
+          animation-delay: 0.4s;
+        }
+        .swiper-slide-active .tp-hero-subtitle {
+          animation-delay: 0.2s;
+        }
+        .swiper-slide-active .tp-hero-btn {
+          animation-delay: 0.6s;
+        }
+
         .swiper-pagination-bullet {
           width: 12px;
           height: 12px;

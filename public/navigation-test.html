@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">🧭 Navigation Test</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Main Pages -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold mb-4">🏠 Main Pages</h2>
+                <div class="space-y-2">
+                    <a href="http://localhost:3002" class="block p-3 bg-green-50 rounded hover:bg-green-100 transition-colors">
+                        → Home Page (মূল পাতা)
+                    </a>
+                    <a href="http://localhost:3002/login" class="block p-3 bg-blue-50 rounded hover:bg-blue-100 transition-colors">
+                        → Login Page (লগইন)
+                    </a>
+                    <a href="http://localhost:3002/demo" class="block p-3 bg-purple-50 rounded hover:bg-purple-100 transition-colors">
+                        → System Demo (সিস্টেম ডেমো)
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Admin Pages -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold mb-4">🎛️ Admin Pages</h2>
+                <div class="space-y-2">
+                    <a href="http://localhost:3002/admin" class="block p-3 bg-green-50 rounded hover:bg-green-100 transition-colors">
+                        → Admin Dashboard (ড্যাশবোর্ড)
+                    </a>
+                    <a href="http://localhost:3002/admin/students" class="block p-3 bg-blue-50 rounded hover:bg-blue-100 transition-colors">
+                        → Students (ছাত্র ব্যবস্থাপনা)
+                    </a>
+                    <a href="http://localhost:3002/admin/teachers" class="block p-3 bg-green-50 rounded hover:bg-green-100 transition-colors">
+                        → Teachers (শিক্ষক ব্যবস্থাপনা)
+                    </a>
+                    <a href="http://localhost:3002/admin/attendance/mark" class="block p-3 bg-yellow-50 rounded hover:bg-yellow-100 transition-colors">
+                        → Attendance (হাজিরা)
+                    </a>
+                </div>
+            </div>
+            
+            <!-- More Admin Modules -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold mb-4">📚 More Modules</h2>
+                <div class="space-y-2">
+                    <a href="http://localhost:3002/admin/fees/collection" class="block p-3 bg-purple-50 rounded hover:bg-purple-100 transition-colors">
+                        → Fee Collection (ফি সংগ্রহ)
+                    </a>
+                    <a href="http://localhost:3002/admin/exams/create" class="block p-3 bg-red-50 rounded hover:bg-red-100 transition-colors">
+                        → Exams (পরীক্ষা)
+                    </a>
+                    <a href="http://localhost:3002/admin/library" class="block p-3 bg-indigo-50 rounded hover:bg-indigo-100 transition-colors">
+                        → Library (লাইব্রেরি)
+                    </a>
+                    <a href="http://localhost:3002/admin/hostel" class="block p-3 bg-pink-50 rounded hover:bg-pink-100 transition-colors">
+                        → Hostel (হোস্টেল)
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Test Functions -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold mb-4">🧪 Test Functions</h2>
+                <div class="space-y-2">
+                    <button onclick="testLogin()" class="w-full p-3 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+                        Quick Login Test
+                    </button>
+                    <button onclick="testLogout()" class="w-full p-3 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
+                        Clear Auth & Logout
+                    </button>
+                    <button onclick="checkAuth()" class="w-full p-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                        Check Auth Status
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Display -->
+        <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold mb-4">📊 Status</h2>
+            <div id="status" class="space-y-2">
+                <p class="text-gray-600">Ready for testing...</p>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="mt-8 bg-green-50 border border-green-200 rounded-lg p-6">
+            <h2 class="text-xl font-bold text-green-800 mb-4">📋 Instructions</h2>
+            <div class="text-green-700 space-y-2">
+                <p><strong>1.</strong> Home Page থেকে "লগইন করুন" বাটনে ক্লিক করুন</p>
+                <p><strong>2.</strong> যেকোনো email/password দিয়ে লগইন করুন</p>
+                <p><strong>3.</strong> Admin Dashboard এ navigation buttons ব্যবহার করুন</p>
+                <p><strong>4.</strong> Header এ "মূল পাতা" বাটনে ক্লিক করে home এ ফিরুন</p>
+                <p><strong>5.</strong> Sidebar এর সব links কাজ করছে কিনা চেক করুন</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(message, color = 'text-gray-700') {
+            document.getElementById('status').innerHTML = 
+                '<p class="' + color + '">' + message + '</p>';
+        }
+        
+        function testLogin() {
+            try {
+                const mockUser = {
+                    id: 1,
+                    name: 'প্রশাসক',
+                    email: 'test@admin.com',
+                    role: 'admin'
+                };
+                
+                const mockToken = 'demo-jwt-token-' + Date.now();
+                
+                localStorage.setItem('auth_token', mockToken);
+                localStorage.setItem('user_data', JSON.stringify(mockUser));
+                
+                updateStatus('✅ Login successful! You can now access admin panel.', 'text-green-600');
+                
+                setTimeout(() => {
+                    window.location.href = 'http://localhost:3002/admin';
+                }, 1500);
+                
+            } catch (error) {
+                updateStatus('❌ Login failed: ' + error.message, 'text-red-600');
+            }
+        }
+        
+        function testLogout() {
+            try {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('user_data');
+                updateStatus('✅ Logged out successfully!', 'text-green-600');
+            } catch (error) {
+                updateStatus('❌ Logout failed: ' + error.message, 'text-red-600');
+            }
+        }
+        
+        function checkAuth() {
+            try {
+                const token = localStorage.getItem('auth_token');
+                const user = localStorage.getItem('user_data');
+                
+                if (token && user) {
+                    const userObj = JSON.parse(user);
+                    updateStatus('✅ Logged in as: ' + userObj.name + ' (' + userObj.email + ')', 'text-green-600');
+                } else {
+                    updateStatus('❌ Not logged in', 'text-red-600');
+                }
+            } catch (error) {
+                updateStatus('❌ Auth check failed: ' + error.message, 'text-red-600');
+            }
+        }
+        
+        // Auto-check auth status on load
+        window.onload = function() {
+            checkAuth();
+        }
+    </script>
+</body>
+</html>

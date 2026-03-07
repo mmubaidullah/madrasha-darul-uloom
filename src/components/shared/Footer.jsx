@@ -150,7 +150,7 @@ const Footer = () => {
                 <div className="bg-white p-2 rounded-full shadow-sm group-hover:bg-[#1E6BAD] group-hover:text-white transition-all">
                   <Facebook size={18} />
                 </div>
-                <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" className="text-sm font-medium">আমাদের ফেসবুক পেজ</a>
+                <a href="https://web.facebook.com/profile.php?id=100028371709253&sk=about" target="_blank" rel="noopener noreferrer" className="text-sm font-medium">আমাদের ফেসবুক পেজ</a>
               </div>
 
               {/* মেইল লিঙ্ক */}

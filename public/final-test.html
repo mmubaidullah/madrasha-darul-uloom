@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final System Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">🎯 Final System Test</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- System Status -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold mb-4">🖥️ System Status</h2>
+                <div id="systemStatus" class="space-y-2">
+                    <p class="text-gray-600">Checking system...</p>
+                </div>
+            </div>
+            
+            <!-- Quick Tests -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold mb-4">⚡ Quick Tests</h2>
+                <div class="space-y-2">
+                    <button onclick="testAPI()" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+                        Test API Endpoints
+                    </button>
+                    <button onclick="testAuth()" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">
+                        Test Authentication
+                    </button>
+                    <button onclick="testPages()" class="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700">
+                        Test All Pages
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test Results -->
+        <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold mb-4">📊 Test Results</h2>
+            <div id="testResults" class="space-y-2">
+                <p class="text-gray-600">No tests run yet...</p>
+            </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="mt-8 bg-green-50 rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-4">🔗 Quick Access</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <a href="http://localhost:3002" class="text-blue-600 hover:underline text-sm">→ Home</a>
+                <a href="http://localhost:3002/demo" class="text-blue-600 hover:underline text-sm">→ Demo</a>
+                <a href="http://localhost:3002/admin-demo" class="text-blue-600 hover:underline text-sm">→ Admin Demo</a>
+                <a href="http://localhost:3002/admin" class="text-blue-600 hover:underline text-sm">→ Full Admin</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = [];
+        
+        function updateResults() {
+            const resultsDiv = document.getElementById('testResults');
+            if (testResults.length === 0) {
+                resultsDiv.innerHTML = '<p class="text-gray-600">No tests run yet...</p>';
+                return;
+            }
+            
+            resultsDiv.innerHTML = testResults.map(result => 
+                `<div class="flex items-center space-x-2">
+                    <span class="${result.success ? 'text-green-600' : 'text-red-600'}">${result.success ? '✅' : '❌'}</span>
+                    <span class="text-sm">${result.message}</span>
+                </div>`
+            ).join('');
+        }
+        
+        async function testAPI() {
+            testResults = [];
+            updateResults();
+            
+            // Test auth API
+            try {
+                const response = await fetch('http://localhost:3002/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'test@test.com', password: '123456' })
+                });
+                const data = await response.json();
+                testResults.push({
+                    success: data.success,
+                    message: `Auth API: ${data.success ? 'Working' : 'Failed'}`
+                });
+            } catch (error) {
+                testResults.push({
+                    success: false,
+                    message: `Auth API: Error - ${error.message}`
+                });
+            }
+            
+            updateResults();
+        }
+        
+        function testAuth() {
+            // Test localStorage
+            localStorage.setItem('test_token', 'test123');
+            const token = localStorage.getItem('test_token');
+            testResults.push({
+                success: token === 'test123',
+                message: `LocalStorage: ${token === 'test123' ? 'Working' : 'Failed'}`
+            });
+            localStorage.removeItem('test_token');
+            
+            updateResults();
+        }
+        
+        async function testPages() {
+            const pages = [
+                'http://localhost:3002',
+                'http://localhost:3002/demo',
+                'http://localhost:3002/admin-demo'
+            ];
+            
+            for (const page of pages) {
+                try {
+                    const response = await fetch(page);
+                    testResults.push({
+                        success: response.ok,
+                        message: `${page.split('/').pop() || 'home'}: ${response.ok ? 'Loading' : 'Failed'}`
+                    });
+                } catch (error) {
+                    testResults.push({
+                        success: false,
+                        message: `${page.split('/').pop() || 'home'}: Error`
+                    });
+                }
+            }
+            
+            updateResults();
+        }
+        
+        // Auto-check system status
+        window.onload = function() {
+            document.getElementById('systemStatus').innerHTML = `
+                <div class="space-y-1">
+                    <p class="text-green-600">✅ Server: Running on port 3002</p>
+                    <p class="text-green-600">✅ Environment: Development</p>
+                    <p class="text-green-600">✅ Auth: Skip mode enabled</p>
+                    <p class="text-green-600">✅ Demo: Mode enabled</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

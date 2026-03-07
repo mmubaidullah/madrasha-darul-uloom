@@ -1,0 +1,13 @@
+[
+  {
+    "_id": "17728210717933wpsxq3te",
+    "studentId": "STD0001",
+    "studentName": "টেস্ট ছাত্র",
+    "class": "class-6",
+    "section": "A",
+    "date": "2026-03-06",
+    "status": "present",
+    "createdAt": "2026-03-06T18:17:51.793Z",
+    "updatedAt": "2026-03-06T19:26:20.821Z"
+  }
+]

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50 p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">🧪 Storage Test</h1>
+        
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Test localStorage</h2>
+            <div class="space-y-4">
+                <button onclick="testJWTStorage()" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+                    Test JWT Token Storage
+                </button>
+                <button onclick="testJSONStorage()" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">
+                    Test JSON Object Storage
+                </button>
+                <button onclick="testMixedStorage()" class="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700">
+                    Test Mixed Storage
+                </button>
+                <button onclick="clearAllStorage()" class="w-full bg-red-600 text-white p-2 rounded hover:bg-red-700">
+                    Clear All Storage
+                </button>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold mb-4">Test Results</h2>
+            <div id="testResults" class="space-y-2">
+                <p class="text-gray-600">No tests run yet...</p>
+            </div>
+        </div>
+        
+        <div class="mt-6 bg-green-50 rounded-lg p-4">
+            <h3 class="font-bold mb-2">Quick Links:</h3>
+            <div class="space-y-1">
+                <a href="http://localhost:3002" class="block text-blue-600 hover:underline">→ Home Page</a>
+                <a href="http://localhost:3002/admin-demo" class="block text-blue-600 hover:underline">→ Admin Demo</a>
+                <a href="http://localhost:3002/login" class="block text-blue-600 hover:underline">→ Login Test</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let results = [];
+        
+        function addResult(test, success, message) {
+            results.push({ test, success, message });
+            updateResults();
+        }
+        
+        function updateResults() {
+            const div = document.getElementById('testResults');
+            if (results.length === 0) {
+                div.innerHTML = '<p class="text-gray-600">No tests run yet...</p>';
+                return;
+            }
+            
+            div.innerHTML = results.map(r => 
+                `<div class="flex items-center space-x-2">
+                    <span class="${r.success ? 'text-green-600' : 'text-red-600'}">${r.success ? '✅' : '❌'}</span>
+                    <span class="font-medium">${r.test}:</span>
+                    <span class="text-sm">${r.message}</span>
+                </div>`
+            ).join('');
+        }
+        
+        function testJWTStorage() {
+            results = [];
+            
+            // Test JWT-like token
+            const jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+            
+            try {
+                localStorage.setItem('test_jwt', jwtToken);
+                const retrieved = localStorage.getItem('test_jwt');
+                addResult('JWT Storage', retrieved === jwtToken, `Stored and retrieved JWT token`);
+                
+                // Test if it can be parsed (it shouldn't be)
+                try {
+                    JSON.parse(retrieved);
+                    addResult('JWT Parse', false, 'JWT was incorrectly parsed as JSON');
+                } catch (e) {
+                    addResult('JWT Parse', true, 'JWT correctly failed JSON parsing (expected)');
+                }
+                
+                localStorage.removeItem('test_jwt');
+            } catch (error) {
+                addResult('JWT Storage', false, `Error: ${error.message}`);
+            }
+        }
+        
+        function testJSONStorage() {
+            // Test JSON object
+            const testObj = { id: 1, name: 'Test User', role: 'admin' };
+            
+            try {
+                localStorage.setItem('test_json', JSON.stringify(testObj));
+                const retrieved = localStorage.getItem('test_json');
+                const parsed = JSON.parse(retrieved);
+                
+                const success = parsed.id === testObj.id && parsed.name === testObj.name;
+                addResult('JSON Storage', success, `Stored and retrieved JSON object`);
+                
+                localStorage.removeItem('test_json');
+            } catch (error) {
+                addResult('JSON Storage', false, `Error: ${error.message}`);
+            }
+        }
+        
+        function testMixedStorage() {
+            // Test both types together
+            const token = 'demo-jwt-token-' + Date.now();
+            const user = { id: 1, name: 'প্রশাসক', email: 'admin@test.com' };
+            
+            try {
+                localStorage.setItem('auth_token', token);
+                localStorage.setItem('user_data', JSON.stringify(user));
+                
+                const retrievedToken = localStorage.getItem('auth_token');
+                const retrievedUser = JSON.parse(localStorage.getItem('user_data'));
+                
+                const tokenOk = retrievedToken === token;
+                const userOk = retrievedUser.name === user.name;
+                
+                addResult('Mixed Storage', tokenOk && userOk, 'Both token and user data stored correctly');
+                
+                // Clean up
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('user_data');
+            } catch (error) {
+                addResult('Mixed Storage', false, `Error: ${error.message}`);
+            }
+        }
+        
+        function clearAllStorage() {
+            try {
+                localStorage.clear();
+                addResult('Clear Storage', true, 'All localStorage cleared');
+            } catch (error) {
+                addResult('Clear Storage', false, `Error: ${error.message}`);
+            }
+        }
+        
+        // Auto-run basic test on load
+        window.onload = function() {
+            setTimeout(() => {
+                testMixedStorage();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

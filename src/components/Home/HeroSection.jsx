@@ -1,14 +1,13 @@
 "use client";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import Link from "next/link";
 
 // Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "swiper/css/effect-fade";
 
 const sliderData = [
   {
@@ -38,8 +37,7 @@ const HeroSection = () => {
   return (
     <section className="tp-hero-area p-relative">
       <Swiper
-        modules={[Navigation, Pagination, Autoplay, EffectFade]}
-        effect="fade"
+        modules={[Navigation, Pagination, Autoplay]}
         loop={true}
         speed={1500}
         autoplay={{ delay: 5000, disableOnInteraction: false }}

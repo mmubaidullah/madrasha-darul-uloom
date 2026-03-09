@@ -22,15 +22,23 @@ export default function StudentsPage() {
   });
 
   // Load students from API
-  const loadStudents = async (page = 1, search = '', classFilter = '') => {
+  const loadStudents = async (page = 1, search = '', classFilter = '', statusFilter = '') => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
         page: page.toString(),
         limit: pagination.limit.toString(),
         ...(search && { search }),
-        ...(classFilter && { class: classFilter })
+        ...(classFilter && { class: classFilter }),
+        ...(statusFilter && { status: statusFilter })
       });
+      
+      // Don't filter by status by default - show all students
+      if (!statusFilter) {
+        params.delete('status');
+      }
+      
+      console.log('Loading students with params:', params.toString());
       
       const response = await fetch(`/api/students?${params}`);
       const result = await response.json();
@@ -38,6 +46,7 @@ export default function StudentsPage() {
       if (result.success) {
         setStudents(result.data);
         setPagination(result.pagination);
+        console.log('Students loaded:', result.data.length);
       } else {
         toast.error('ছাত্রদের তথ্য লোড করতে সমস্যা হয়েছে');
         console.error('API Error:', result.error);

@@ -1,0 +1,16 @@
+{
+  "studentName": "মোহাম্মদ আব্দুল্লাহ",
+  "fatherName": "মোহাম্মদ আব্দুর রহমান",
+  "motherName": "মোসাম্মৎ ফাতিমা খাতুন",
+  "guardianName": "মোহাম্মদ আব্দুর রহমান",
+  "guardianMobile": "01712345678",
+  "presentAddress": {
+    "village": "পূর্ব পাড়া",
+    "postOffice": "সাভার",
+    "upazila": "সাভার",
+    "district": "ঢাকা"
+  },
+  "department": "কিতাব বিভাগ",
+  "admissionClass": "ইবতিদাইয়্যাহ-১",
+  "academicYear": "2024"
+}

@@ -1,54 +1,103 @@
+import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
-export function middleware(request) {
-  // Check if authentication should be skipped (for development)
-  const skipAuth = process.env.SKIP_AUTH === 'true';
-  const demoMode = process.env.DEMO_MODE === 'true';
-  
-  if (skipAuth || demoMode) {
+export default withAuth(
+  function middleware(req) {
+    const token = req.nextauth.token;
+    const { pathname } = req.nextUrl;
+
+    // Allow access to public routes
+    if (
+      pathname.startsWith('/login') ||
+      pathname.startsWith('/register') ||
+      pathname.startsWith('/api/auth') ||
+      pathname.startsWith('/api/register') ||
+      pathname.startsWith('/_next') ||
+      pathname.startsWith('/favicon') ||
+      pathname === '/'
+    ) {
+      return NextResponse.next();
+    }
+
+    // Redirect to login if not authenticated
+    if (!token) {
+      const loginUrl = new URL('/login', req.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    // Role-based access control
+    const userRole = token.role;
+    
+    // Define protected routes and their required roles
+    const protectedRoutes = {
+      '/dashboard/admin': ['super_admin', 'admin'],
+      '/dashboard/teacher': ['super_admin', 'admin', 'teacher'],
+      '/dashboard/student': ['super_admin', 'admin', 'teacher', 'student'],
+      '/dashboard/parent': ['super_admin', 'admin', 'teacher', 'parent'],
+      '/admin': ['super_admin', 'admin'],
+      '/admin/settings/users': ['super_admin'], // Only super_admin can manage users
+      '/admin/settings': ['super_admin', 'admin'],
+    };
+
+    // Check if current path requires specific roles
+    for (const [route, allowedRoles] of Object.entries(protectedRoutes)) {
+      if (pathname.startsWith(route)) {
+        if (!allowedRoles.includes(userRole)) {
+          // Redirect to access denied page
+          return NextResponse.redirect(new URL('/access-denied', req.url));
+        }
+        break;
+      }
+    }
+
+    // Role-based dashboard redirects
+    if (pathname === '/dashboard') {
+      const roleRedirects = {
+        super_admin: '/dashboard/admin',
+        admin: '/dashboard/admin',
+        teacher: '/dashboard/teacher',
+        student: '/dashboard/student',
+        parent: '/dashboard/parent'
+      };
+
+      const redirectUrl = roleRedirects[userRole] || '/dashboard/parent';
+      return NextResponse.redirect(new URL(redirectUrl, req.url));
+    }
+
     return NextResponse.next();
+  },
+  {
+    callbacks: {
+      authorized: ({ token, req }) => {
+        // Allow access to API routes and public pages
+        const { pathname } = req.nextUrl;
+        
+        if (
+          pathname.startsWith('/api/') ||
+          pathname.startsWith('/login') ||
+          pathname.startsWith('/register') ||
+          pathname === '/'
+        ) {
+          return true;
+        }
+
+        // Require authentication for all other routes
+        return !!token;
+      },
+    },
   }
-  
-  // Get the pathname of the request (e.g. /, /admin, /login)
-  const path = request.nextUrl.pathname;
+);
 
-  // Define paths that are considered public (accessible without login)
-  const isPublicPath = path === '/login' || 
-                      path === '/' || 
-                      path === '/demo' ||
-                      path === '/admin-demo' ||
-                      path.startsWith('/api/auth') ||
-                      path.startsWith('/_next') ||
-                      path.startsWith('/public') ||
-                      path.includes('.html');
-
-  // Get the token from the cookies
-  const token = request.cookies.get('token')?.value || '';
-
-  // Redirect to login if accessing private paths without token
-  if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL('/login', request.nextUrl));
-  }
-
-  // Redirect to admin if accessing login with token
-  if (isPublicPath && token && path === '/login') {
-    return NextResponse.redirect(new URL('/admin', request.nextUrl));
-  }
-
-  return NextResponse.next();
-}
-
-// See "Matching Paths" below to learn more
 export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public folder
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|public|images).*)',
+    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
   ],
 };

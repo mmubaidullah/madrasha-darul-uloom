@@ -32,31 +32,27 @@ export default function AdminDashboard() {
       const result = await response.json();
       
       if (result.success) {
-        const { stats, recentActivities: activities } = result.data;
-        
-        // আইকন ম্যাপিং
-        const iconMap = {
-          'FiUsers': FiUsers,
-          'FiBookOpen': FiBookOpen,
-          'FiDollarSign': FiDollarSign,
-          'FiActivity': FiActivity
-        };
-        
-        // আইকন যোগ করুন
-        const activitiesWithIcons = activities.map(activity => ({
-          ...activity,
-          icon: iconMap[activity.icon] || FiActivity
-        }));
-        
-        setRecentActivities(activitiesWithIcons);
+        const { quickStats: apiStats, recentAdmissions, stats } = result.data;
         
         setQuickStats({
-          todayAdmissions: stats.todayAdmissions,
-          todayAttendance: stats.attendancePercentage,
-          todayFeeCollection: stats.todayFeeCollection,
-          activeStudents: stats.totalStudents,
-          activeTeachers: stats.totalTeachers
+          todayAdmissions: apiStats.todayAdmissions || 0,
+          todayAttendance: 85, // Mock data
+          todayFeeCollection: apiStats.totalFeesCollected || 0,
+          activeStudents: stats.totalStudents || 0,
+          activeTeachers: stats.totalTeachers || 0
         });
+
+        // Set recent activities from recent admissions
+        const activities = recentAdmissions.map((admission, index) => ({
+          id: admission.id,
+          title: `নতুন ভর্তি: ${admission.name}`,
+          description: `${admission.department} - ${admission.class}`,
+          time: new Date(admission.date).toLocaleDateString('bn-BD'),
+          icon: FiUsers,
+          color: 'bg-blue-100 text-blue-600'
+        }));
+
+        setRecentActivities(activities);
       } else {
         console.error('ড্যাশবোর্ড ডাটা লোড করতে সমস্যা:', result.error);
         // ফলব্যাক ডাটা
@@ -67,6 +63,7 @@ export default function AdminDashboard() {
           activeStudents: 0,
           activeTeachers: 0
         });
+        setRecentActivities([]);
       }
     } catch (error) {
       console.error('ড্যাশবোর্ড ডাটা লোড করতে সমস্যা:', error);
@@ -78,6 +75,7 @@ export default function AdminDashboard() {
         activeStudents: 0,
         activeTeachers: 0
       });
+      setRecentActivities([]);
     } finally {
       setLoading(false);
     }

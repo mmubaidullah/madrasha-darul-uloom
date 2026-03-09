@@ -126,7 +126,7 @@ export default function StudentAdmissionPage() {
         studentId: `STD${Date.now()}`
       };
       
-      const response = await fetch('/api/students', {
+      const response = await fetch('http://localhost:3001/api/students', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(processedData),

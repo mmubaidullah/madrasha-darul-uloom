@@ -1,5 +1,6 @@
 import clientPromise from './mongodb';
 import { ObjectId } from 'mongodb';
+import bcrypt from 'bcryptjs';
 
 class MongoDB {
   constructor(collectionName) {
@@ -7,9 +8,14 @@ class MongoDB {
   }
 
   async getCollection() {
-    const client = await clientPromise;
-    const db = client.db('madrasha_management');
-    return db.collection(this.collectionName);
+    try {
+      const client = await clientPromise;
+      const db = client.db('madrasha_management');
+      return db.collection(this.collectionName);
+    } catch (error) {
+      console.error(`MongoDB connection error for collection ${this.collectionName}:`, error);
+      throw new Error(`Database connection failed: ${error.message}`);
+    }
   }
 
   generateId() {
@@ -151,6 +157,111 @@ class MongoDB {
   }
 }
 
+// User Management Class
+export class UserMongoDB extends MongoDB {
+  constructor() {
+    super('users');
+  }
+
+  async createUser(userData) {
+    try {
+      // Check if email already exists
+      const existingUser = await this.findOne({ email: userData.email });
+      if (existingUser) {
+        throw new Error('এই ইমেইল দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট রয়েছে');
+      }
+
+      // Hash password
+      const saltRounds = 12;
+      const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+
+      // Prepare user data
+      const processedData = {
+        name: userData.name,
+        email: userData.email.toLowerCase(),
+        password: hashedPassword,
+        phone: userData.phone,
+        role: userData.role,
+        status: 'active',
+        emailVerified: false,
+        lastLogin: null,
+        loginAttempts: 0,
+        lockedUntil: null
+      };
+
+      return await this.create(processedData);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
+  }
+
+  async findByEmail(email) {
+    return await this.findOne({ email: email.toLowerCase() });
+  }
+
+  async verifyPassword(plainPassword, hashedPassword) {
+    return await bcrypt.compare(plainPassword, hashedPassword);
+  }
+
+  async updateLastLogin(userId) {
+    return await this.updateById(userId, { 
+      lastLogin: new Date(),
+      loginAttempts: 0,
+      lockedUntil: null
+    });
+  }
+
+  async incrementLoginAttempts(userId) {
+    const user = await this.findById(userId);
+    if (!user) return null;
+
+    const attempts = (user.loginAttempts || 0) + 1;
+    const updateData = { loginAttempts: attempts };
+
+    // Lock account after 5 failed attempts for 30 minutes
+    if (attempts >= 5) {
+      updateData.lockedUntil = new Date(Date.now() + 30 * 60 * 1000);
+    }
+
+    return await this.updateById(userId, updateData);
+  }
+
+  async isAccountLocked(user) {
+    if (!user.lockedUntil) return false;
+    return new Date() < new Date(user.lockedUntil);
+  }
+
+  async getUsers(options = {}) {
+    const { search, role, status, page = 1, limit = 10 } = options;
+    
+    let filter = {};
+    
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    if (role) {
+      filter.role = role;
+    }
+
+    if (status) {
+      filter.status = status;
+    }
+
+    return await this.findAll({
+      filter,
+      limit: parseInt(limit),
+      skip: (parseInt(page) - 1) * parseInt(limit),
+      projection: { password: 0 } // Exclude password from results
+    });
+  }
+}
+
 // Specific database classes
 export class StudentMongoDB extends MongoDB {
   constructor() {
@@ -173,14 +284,22 @@ export class StudentMongoDB extends MongoDB {
   }
 
   async getStudents(options = {}) {
-    const { search, class: className, department, group, status = 'active', page = 1, limit = 10 } = options;
+    const { search, class: className, department, group, status, page = 1, limit = 10 } = options;
     
-    let filter = { status };
+    console.log('MongoDB getStudents called with options:', options);
+    
+    let filter = {};
+    
+    // Only filter by status if explicitly provided
+    if (status) {
+      filter.status = status;
+    }
     
     if (search) {
       filter.$or = [
         { nameBangla: { $regex: search, $options: 'i' } },
         { nameEnglish: { $regex: search, $options: 'i' } },
+        { studentName: { $regex: search, $options: 'i' } },
         { studentId: { $regex: search, $options: 'i' } }
       ];
     }
@@ -197,11 +316,22 @@ export class StudentMongoDB extends MongoDB {
       filter.group = group;
     }
 
-    return await this.findAll({
+    console.log('MongoDB filter:', JSON.stringify(filter, null, 2));
+
+    const result = await this.findAll({
       filter,
       limit: parseInt(limit),
       skip: (parseInt(page) - 1) * parseInt(limit)
     });
+
+    console.log('MongoDB getStudents result:', {
+      dataCount: result.data.length,
+      total: result.total,
+      page: result.page,
+      pages: result.pages
+    });
+
+    return result;
   }
 }
 

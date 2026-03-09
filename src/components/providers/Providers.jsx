@@ -1,9 +1,10 @@
 'use client';
 import { Toaster } from 'react-hot-toast';
+import SessionProvider from '@/components/SessionProvider';
 
 export default function Providers({ children }) {
   return (
-    <>
+    <SessionProvider>
       {children}
       <Toaster 
         position="top-right"
@@ -21,6 +22,6 @@ export default function Providers({ children }) {
           },
         }}
       />
-    </>
+    </SessionProvider>
   );
 }

@@ -1,5 +1,9 @@
 'use client';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import Link from 'next/link';
+import { getRoleBasedRedirectUrl } from '@/lib/auth';
 
 export default function Home() {
   return (

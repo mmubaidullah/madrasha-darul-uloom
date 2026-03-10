@@ -22,8 +22,18 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'teacher', 'accountant', 'librarian', 'staff'],
-    default: 'staff'
+    enum: [
+      'muhtamim',              // মুহতামিম (Super Admin)
+      'bivagiya_prodhan',      // বিভাগীয় প্রধান
+      'negaran_ustaz',         // নেগরান উস্তায
+      'nazeme_darul_ikama',    // নাযেমে দারুল ইকামা
+      'nazeme_talimaat',       // নাযেমে তালিমাত
+      'hisab_rokkhok',         // হিসাব রক্ষক
+      'teacher',               // শিক্ষক (general)
+      'student',               // ছাত্র
+      'parent'                 // অভিভাবক
+    ],
+    default: 'student'
   },
   phone: {
     type: String,
@@ -57,10 +67,24 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  department: {
+    type: String,
+    trim: true,
+    maxLength: [100, 'Department cannot exceed 100 characters']
+  },
+  studentId: {
+    type: String,
+    sparse: true,
+    unique: true
+  },
+  parentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   permissions: [{
     module: {
       type: String,
-      enum: ['students', 'teachers', 'attendance', 'fees', 'exams', 'library', 'hostel', 'reports', 'settings']
+      enum: ['students', 'teachers', 'attendance', 'fees', 'exams', 'library', 'hostel', 'reports', 'settings', 'users', 'communication', 'certificates']
     },
     actions: [{
       type: String,
@@ -95,19 +119,45 @@ UserSchema.virtual('displayName').get(function() {
 
 // Method to check if user has permission
 UserSchema.methods.hasPermission = function(module, action) {
-  if (this.role === 'admin') return true;
+  // মুহতামিম has all permissions
+  if (this.role === 'muhtamim') return true;
   
   const permission = this.permissions.find(p => p.module === module);
   return permission && permission.actions.includes(action);
 };
 
-// Method to get user's modules
+// Method to get user's modules based on role
 UserSchema.methods.getAccessibleModules = function() {
-  if (this.role === 'admin') {
-    return ['students', 'teachers', 'attendance', 'fees', 'exams', 'library', 'hostel', 'reports', 'settings'];
-  }
+  const roleModules = {
+    muhtamim: ['students', 'teachers', 'attendance', 'fees', 'exams', 'library', 'hostel', 'reports', 'settings', 'users', 'communication', 'certificates'],
+    bivagiya_prodhan: ['students', 'teachers', 'attendance', 'reports'],
+    negaran_ustaz: ['students', 'attendance', 'exams'],
+    nazeme_darul_ikama: ['students', 'hostel'],
+    nazeme_talimaat: ['students', 'exams', 'reports'],
+    hisab_rokkhok: ['fees', 'reports'],
+    teacher: ['students', 'attendance', 'exams'],
+    student: ['attendance', 'exams'],
+    parent: ['students', 'attendance', 'exams', 'fees']
+  };
   
-  return this.permissions.map(p => p.module);
+  return roleModules[this.role] || [];
+};
+
+// Method to get role display name in Bangla
+UserSchema.methods.getRoleDisplayName = function() {
+  const roleNames = {
+    muhtamim: 'মুহতামিম',
+    bivagiya_prodhan: 'বিভাগীয় প্রধান',
+    negaran_ustaz: 'নেগরান উস্তায',
+    nazeme_darul_ikama: 'নাযেমে দারুল ইকামা',
+    nazeme_talimaat: 'নাযেমে তালিমাত',
+    hisab_rokkhok: 'হিসাব রক্ষক',
+    teacher: 'শিক্ষক',
+    student: 'ছাত্র',
+    parent: 'অভিভাবক'
+  };
+  
+  return roleNames[this.role] || this.role;
 };
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

@@ -163,6 +163,9 @@ export default function RegisterPage() {
                 <option value="parent">অভিভাবক</option>
               </select>
               {errors.role && <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>}
+              <p className="mt-1 text-xs text-gray-500">
+                নোট: প্রশাসনিক ভূমিকা (মুহতামিম, বিভাগীয় প্রধান ইত্যাদি) শুধুমাত্র মুহতামিম দ্বারা নিয়োগ করা যাবে
+              </p>
             </div>
 
             {/* Password Field */}

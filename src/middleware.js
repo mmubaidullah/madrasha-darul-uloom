@@ -1,5 +1,6 @@
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
+import { ROLES, getRoleBasedRedirectUrl, isPublicRoute } from './lib/rolePermissions';
 
 export default withAuth(
   function middleware(req) {
@@ -8,13 +9,12 @@ export default withAuth(
 
     // Allow access to public routes
     if (
-      pathname.startsWith('/login') ||
-      pathname.startsWith('/register') ||
+      isPublicRoute(pathname) ||
       pathname.startsWith('/api/auth') ||
       pathname.startsWith('/api/register') ||
       pathname.startsWith('/_next') ||
       pathname.startsWith('/favicon') ||
-      pathname === '/'
+      pathname.startsWith('/public')
     ) {
       return NextResponse.next();
     }
@@ -31,13 +31,44 @@ export default withAuth(
     
     // Define protected routes and their required roles
     const protectedRoutes = {
-      '/dashboard/admin': ['super_admin', 'admin'],
-      '/dashboard/teacher': ['super_admin', 'admin', 'teacher'],
-      '/dashboard/student': ['super_admin', 'admin', 'teacher', 'student'],
-      '/dashboard/parent': ['super_admin', 'admin', 'teacher', 'parent'],
-      '/admin': ['super_admin', 'admin'],
-      '/admin/settings/users': ['super_admin'], // Only super_admin can manage users
-      '/admin/settings': ['super_admin', 'admin'],
+      '/dashboard/admin': [
+        ROLES.MUHTAMIM, 
+        ROLES.BIVAGIYA_PRODHAN, 
+        ROLES.NAZEME_DARUL_IKAMA, 
+        ROLES.NAZEME_TALIMAAT, 
+        ROLES.HISAB_ROKKHOK
+      ],
+      '/dashboard/teacher': [
+        ROLES.MUHTAMIM, 
+        ROLES.BIVAGIYA_PRODHAN, 
+        ROLES.NEGARAN_USTAZ, 
+        ROLES.TEACHER
+      ],
+      '/dashboard/student': [
+        ROLES.MUHTAMIM, 
+        ROLES.BIVAGIYA_PRODHAN, 
+        ROLES.NEGARAN_USTAZ, 
+        ROLES.TEACHER, 
+        ROLES.STUDENT
+      ],
+      '/dashboard/parent': [
+        ROLES.MUHTAMIM, 
+        ROLES.BIVAGIYA_PRODHAN, 
+        ROLES.TEACHER, 
+        ROLES.PARENT
+      ],
+      '/admin': [
+        ROLES.MUHTAMIM, 
+        ROLES.BIVAGIYA_PRODHAN, 
+        ROLES.NAZEME_DARUL_IKAMA, 
+        ROLES.NAZEME_TALIMAAT, 
+        ROLES.HISAB_ROKKHOK
+      ],
+      '/admin/settings/users': [ROLES.MUHTAMIM], // Only মুহতামিম can manage users
+      '/admin/settings': [ROLES.MUHTAMIM, ROLES.BIVAGIYA_PRODHAN],
+      '/admin/fees': [ROLES.MUHTAMIM, ROLES.HISAB_ROKKHOK],
+      '/admin/hostel': [ROLES.MUHTAMIM, ROLES.NAZEME_DARUL_IKAMA],
+      '/admin/exams': [ROLES.MUHTAMIM, ROLES.NAZEME_TALIMAAT, ROLES.NEGARAN_USTAZ],
     };
 
     // Check if current path requires specific roles
@@ -53,15 +84,7 @@ export default withAuth(
 
     // Role-based dashboard redirects
     if (pathname === '/dashboard') {
-      const roleRedirects = {
-        super_admin: '/dashboard/admin',
-        admin: '/dashboard/admin',
-        teacher: '/dashboard/teacher',
-        student: '/dashboard/student',
-        parent: '/dashboard/parent'
-      };
-
-      const redirectUrl = roleRedirects[userRole] || '/dashboard/parent';
+      const redirectUrl = getRoleBasedRedirectUrl(userRole);
       return NextResponse.redirect(new URL(redirectUrl, req.url));
     }
 
@@ -75,9 +98,7 @@ export default withAuth(
         
         if (
           pathname.startsWith('/api/') ||
-          pathname.startsWith('/login') ||
-          pathname.startsWith('/register') ||
-          pathname === '/'
+          isPublicRoute(pathname)
         ) {
           return true;
         }

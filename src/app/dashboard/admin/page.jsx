@@ -2,12 +2,17 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { FiUsers, FiBookOpen, FiDollarSign, FiBarChart3, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FiUsers, FiBookOpen, FiDollarSign, FiBarChart3, FiSettings, FiLogOut, FiHome, FiAward } from 'react-icons/fi';
 import Link from 'next/link';
+import RoleBadge from '@/components/RoleBadge';
+import PermissionGuard from '@/components/PermissionGuard';
+import { usePermission } from '@/hooks/usePermission';
+import { MODULES, ACTIONS, ROLES } from '@/lib/rolePermissions';
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { checkPermission, userRole } = usePermission();
 
   useEffect(() => {
     if (status === 'loading') return; // Still loading
@@ -17,8 +22,16 @@ export default function AdminDashboard() {
       return;
     }
 
-    // Check if user has admin access
-    if (!['super_admin', 'admin'].includes(session.user.role)) {
+    // Check if user has admin access (any administrative role)
+    const adminRoles = [
+      ROLES.MUHTAMIM,
+      ROLES.BIVAGIYA_PRODHAN,
+      ROLES.NAZEME_DARUL_IKAMA,
+      ROLES.NAZEME_TALIMAAT,
+      ROLES.HISAB_ROKKHOK
+    ];
+    
+    if (!adminRoles.includes(session.user.role)) {
       router.push('/access-denied');
       return;
     }
@@ -63,7 +76,7 @@ export default function AdminDashboard() {
             <div className="flex items-center space-x-4">
               <div className="text-right">
                 <p className="text-sm font-medium text-gray-900">{session.user.name}</p>
-                <p className="text-xs text-gray-500 capitalize">{session.user.role}</p>
+                <RoleBadge role={session.user.role} size="sm" />
               </div>
               <button
                 onClick={handleSignOut}
@@ -88,7 +101,7 @@ export default function AdminDashboard() {
                   স্বাগতম, {session.user.name}!
                 </h3>
                 <div className="mt-2 text-sm text-green-700">
-                  <p>আপনি সফলভাবে অ্যাডমিন ড্যাশবোর্ডে লগইন করেছেন। আপনার ভূমিকা: <strong className="capitalize">{session.user.role}</strong></p>
+                  <p>আপনি সফলভাবে অ্যাডমিন ড্যাশবোর্ডে লগইন করেছেন।</p>
                 </div>
               </div>
             </div>
@@ -128,67 +141,124 @@ export default function AdminDashboard() {
         <div className="px-4 py-6 sm:px-0">
           <h2 className="text-lg font-medium text-gray-900 mb-4">দ্রুত অ্যাকশন</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Link href="/admin/students" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-              <div className="flex items-center">
-                <FiUsers className="h-8 w-8 text-blue-600" />
-                <div className="ml-4">
-                  <h3 className="text-lg font-medium text-gray-900">ছাত্র ব্যবস্থাপনা</h3>
-                  <p className="text-sm text-gray-500">ছাত্রদের তথ্য দেখুন ও পরিচালনা করুন</p>
+            
+            {/* Students Management */}
+            <PermissionGuard module={MODULES.STUDENTS} action={ACTIONS.READ}>
+              <Link href="/admin/students" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <FiUsers className="h-8 w-8 text-blue-600" />
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900">ছাত্র ব্যবস্থাপনা</h3>
+                    <p className="text-sm text-gray-500">ছাত্রদের তথ্য দেখুন ও পরিচালনা করুন</p>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </PermissionGuard>
 
-            <Link href="/admin/teachers" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-              <div className="flex items-center">
-                <FiBookOpen className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <h3 className="text-lg font-medium text-gray-900">শিক্ষক ব্যবস্থাপনা</h3>
-                  <p className="text-sm text-gray-500">শিক্ষকদের তথ্য দেখুন ও পরিচালনা করুন</p>
+            {/* Teachers Management */}
+            <PermissionGuard module={MODULES.TEACHERS} action={ACTIONS.READ}>
+              <Link href="/admin/teachers" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <FiBookOpen className="h-8 w-8 text-green-600" />
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900">শিক্ষক ব্যবস্থাপনা</h3>
+                    <p className="text-sm text-gray-500">শিক্ষকদের তথ্য দেখুন ও পরিচালনা করুন</p>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </PermissionGuard>
 
-            <Link href="/admin/attendance" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-              <div className="flex items-center">
-                <FiBarChart3 className="h-8 w-8 text-purple-600" />
-                <div className="ml-4">
-                  <h3 className="text-lg font-medium text-gray-900">হাজিরা</h3>
-                  <p className="text-sm text-gray-500">দৈনিক হাজিরা নিন ও রিপোর্ট দেখুন</p>
+            {/* Attendance */}
+            <PermissionGuard module={MODULES.ATTENDANCE} action={ACTIONS.READ}>
+              <Link href="/admin/attendance" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <FiBarChart3 className="h-8 w-8 text-purple-600" />
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900">হাজিরা</h3>
+                    <p className="text-sm text-gray-500">দৈনিক হাজিরা নিন ও রিপোর্ট দেখুন</p>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </PermissionGuard>
 
-            <Link href="/admin/fees" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-              <div className="flex items-center">
-                <FiDollarSign className="h-8 w-8 text-yellow-600" />
-                <div className="ml-4">
-                  <h3 className="text-lg font-medium text-gray-900">ফি ব্যবস্থাপনা</h3>
-                  <p className="text-sm text-gray-500">ফি সংগ্রহ ও বকেয়া দেখুন</p>
+            {/* Fees Management */}
+            <PermissionGuard module={MODULES.FEES} action={ACTIONS.READ}>
+              <Link href="/admin/fees" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <FiDollarSign className="h-8 w-8 text-yellow-600" />
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900">ফি ব্যবস্থাপনা</h3>
+                    <p className="text-sm text-gray-500">ফি সংগ্রহ ও বকেয়া দেখুন</p>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </PermissionGuard>
 
-            <Link href="/admin/reports" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-              <div className="flex items-center">
-                <FiBarChart3 className="h-8 w-8 text-indigo-600" />
-                <div className="ml-4">
-                  <h3 className="text-lg font-medium text-gray-900">রিপোর্ট</h3>
-                  <p className="text-sm text-gray-500">বিস্তারিত রিপোর্ট ও অ্যানালাইটিক্স</p>
+            {/* Exams */}
+            <PermissionGuard module={MODULES.EXAMS} action={ACTIONS.READ}>
+              <Link href="/admin/exams" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <FiAward className="h-8 w-8 text-indigo-600" />
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900">পরীক্ষা</h3>
+                    <p className="text-sm text-gray-500">পরীক্ষা তৈরি ও ফলাফল ব্যবস্থাপনা</p>
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </PermissionGuard>
 
-            {session.user.role === 'super_admin' && (
+            {/* Hostel Management */}
+            <PermissionGuard module={MODULES.HOSTEL} action={ACTIONS.READ}>
+              <Link href="/admin/hostel" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <FiHome className="h-8 w-8 text-teal-600" />
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900">হোস্টেল</h3>
+                    <p className="text-sm text-gray-500">আবাসিক ব্যবস্থাপনা</p>
+                  </div>
+                </div>
+              </Link>
+            </PermissionGuard>
+
+            {/* Reports */}
+            <PermissionGuard module={MODULES.REPORTS} action={ACTIONS.READ}>
+              <Link href="/admin/reports" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <FiBarChart3 className="h-8 w-8 text-indigo-600" />
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900">রিপোর্ট</h3>
+                    <p className="text-sm text-gray-500">বিস্তারিত রিপোর্ট ও অ্যানালাইটিক্স</p>
+                  </div>
+                </div>
+              </Link>
+            </PermissionGuard>
+
+            {/* User Management - Only for মুহতামিম */}
+            <PermissionGuard module={MODULES.USERS} action={ACTIONS.READ}>
+              <Link href="/admin/settings/users" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+                <div className="flex items-center">
+                  <FiUsers className="h-8 w-8 text-gray-600" />
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900">ব্যবহারকারী</h3>
+                    <p className="text-sm text-gray-500">ব্যবহারকারী ব্যবস্থাপনা</p>
+                  </div>
+                </div>
+              </Link>
+            </PermissionGuard>
+
+            {/* Settings - Only for মুহতামিম and বিভাগীয় প্রধান */}
+            <PermissionGuard module={MODULES.SETTINGS} action={ACTIONS.READ}>
               <Link href="/admin/settings" className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
                 <div className="flex items-center">
                   <FiSettings className="h-8 w-8 text-gray-600" />
                   <div className="ml-4">
                     <h3 className="text-lg font-medium text-gray-900">সেটিংস</h3>
-                    <p className="text-sm text-gray-500">সিস্টেম সেটিংস ও ব্যবহারকারী ব্যবস্থাপনা</p>
+                    <p className="text-sm text-gray-500">সিস্টেম সেটিংস</p>
                   </div>
                 </div>
               </Link>
-            )}
+            </PermissionGuard>
+
           </div>
         </div>
       </main>

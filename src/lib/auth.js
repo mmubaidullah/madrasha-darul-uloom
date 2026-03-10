@@ -120,7 +120,7 @@ export const authOptions = {
               email: token.email,
               password: 'oauth-user', // OAuth users don't have password
               phone: '', // Will be updated in profile
-              role: 'parent', // Default role for OAuth users
+              role: 'parent', // Default role for OAuth users (parent)
               emailVerified: true, // OAuth emails are pre-verified
               status: 'active'
             });
@@ -179,18 +179,15 @@ export const authOptions = {
   debug: process.env.NODE_ENV === 'development',
 };
 
-// Helper function to get role-based redirect URL
-export function getRoleBasedRedirectUrl(role) {
-  const roleRedirects = {
-    super_admin: '/dashboard/admin',
-    admin: '/dashboard/admin',
-    teacher: '/dashboard/teacher',
-    student: '/dashboard/student',
-    parent: '/dashboard/parent'
-  };
-
-  return roleRedirects[role] || '/dashboard';
-}
+// Export role-based utilities from rolePermissions
+export { 
+  getRoleBasedRedirectUrl, 
+  hasMinimumRole,
+  hasPermission,
+  ROLES,
+  ROLE_NAMES,
+  ROLE_HIERARCHY
+} from './rolePermissions';
 
 // Helper function to check if user has required role
 export function hasRequiredRole(userRole, requiredRoles) {
@@ -198,18 +195,4 @@ export function hasRequiredRole(userRole, requiredRoles) {
     requiredRoles = [requiredRoles];
   }
   return requiredRoles.includes(userRole);
-}
-
-// Role hierarchy for access control
-export const ROLE_HIERARCHY = {
-  super_admin: 4,
-  admin: 3,
-  teacher: 2,
-  student: 1,
-  parent: 1
-};
-
-// Check if user has sufficient role level
-export function hasMinimumRole(userRole, minimumRole) {
-  return ROLE_HIERARCHY[userRole] >= ROLE_HIERARCHY[minimumRole];
 }
